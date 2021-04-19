@@ -9,6 +9,13 @@ export var speed = 600
 
 # Node when set, try to move toward this target 
 var target
+# side of the player the grab came from
+# in the form of a dict
+#{
+#	"name": name of the side left / right / up / down
+#	"direction": Vector2
+#}
+var side
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,10 +24,26 @@ func _ready():
 	# on connecte le signal body_entered à la méthode on_collision with target
 	connect("body_entered", self, "_on_collision_with_target")
 
-func set_target(_node):
+func set_target(_node, player_side):
 	target = _node
+	side = player_side
 
+func release(direction):
+	var scene = get_parent().get_parent()
+	var pos = get_global_transform().origin
+	get_parent().remove_child(self)
+	scene.add_child(self)
+	global_transform.origin = pos
+	set_mode(RigidBody.MODE_RIGID)
+	linear_velocity = direction
+	side = null
+	
 func _on_collision_with_target(node):
+	# on fait ça parceque les modifications de physique dans un callback de collision ça plante
+	# donc il faut faire en call_deferred
+	self.call_deferred("_handle_collision", node)
+		
+func _handle_collision(node):
 	# si le noeud qu'on collide c'est le joueur
 	if node == target:
 		# on enleve le noeud actuel de son parent (la scène)
@@ -29,10 +52,14 @@ func _on_collision_with_target(node):
 		target.add_child(self)
 		# on calcul l'offset pour bien le positionner
 		var offset = target.get_node("CollisionShape2D").shape.extents
-		position = Vector2(offset.x * 2, 0)
+		position = offset.x * 2 * side["direction"]
+		rotation = 0
 		target = null
 		# on change le type de body pour pouvoir collider
 		set_mode(RigidBody2D.MODE_KINEMATIC)
+		# on appelle le parent pour réautoriser le hook
+		get_parent().on_target_reached(side["name"])
+		
 		
 func _physics_process(delta):
 	if target:
