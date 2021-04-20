@@ -5,6 +5,7 @@ extends KinematicBody2D
 export var speed = 400
 export var hook_size = 500
 export var repell_speed = 2000
+export var lives = 3
 
 var screen_size
 var casted = false
