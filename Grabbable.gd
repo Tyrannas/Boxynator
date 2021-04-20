@@ -16,6 +16,9 @@ var target
 #	"direction": Vector2
 #}
 var side
+# use to determine wether the collision with another ennemy should be considered as harmful for the ennemy
+var is_projectile = false
+signal hit
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,6 +30,7 @@ func _ready():
 func set_target(_node, player_side):
 	target = _node
 	side = player_side
+	is_projectile = false
 
 func release(direction):
 	var scene = get_parent().get_parent()
@@ -37,6 +41,7 @@ func release(direction):
 	set_mode(RigidBody.MODE_RIGID)
 	linear_velocity = direction
 	side = null
+	is_projectile = true
 	
 func _on_collision_with_target(node):
 	# on fait ça parceque les modifications de physique dans un callback de collision ça plante
@@ -59,7 +64,10 @@ func _handle_collision(node):
 		set_mode(RigidBody2D.MODE_KINEMATIC)
 		# on appelle le parent pour réautoriser le hook
 		get_parent().on_target_reached(side["name"])
-		
+	# a priori si autre collision c'est avec un autre ennemy
+	else:
+		if is_projectile:
+			emit_signal("hit")
 		
 func _physics_process(delta):
 	if target:

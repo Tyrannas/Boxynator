@@ -88,7 +88,6 @@ func _handle_hook(direction):
 		$RayCast2D.cast_to = hook_size * target["direction"]
 		var res = $RayCast2D.get_collider()
 		if res:
-			print(res)
 			res.set_target(self, {"name": direction, "direction": target["direction"]})
 			target["hookable"] = false
 			target["hooked"] = res
