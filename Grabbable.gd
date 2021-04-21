@@ -64,6 +64,10 @@ func _handle_collision(node):
 		set_mode(RigidBody2D.MODE_KINEMATIC)
 		# on appelle le parent pour réautoriser le hook
 		get_parent().on_target_reached(side["name"])
+		# on se met sur le layer de collision 3 pour ne plus collisioner avec le joueur
+		set_collision_layer(4)
+		# on met le masque de collision 2 pour collisioner uniquement avec les ennemis
+		set_collision_mask(2)
 	# a priori si autre collision c'est avec un autre ennemy
 	else:
 		if is_projectile:

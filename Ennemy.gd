@@ -19,7 +19,7 @@ func _process(delta):
 		var size = $CollisionShape2D.shape.extents + Vector2(50, 50)
 		if pos.x > screen_size.x + size.x or pos.x < -size.x or pos.y > screen_size.y + size.y or pos.y < -size.x:
 			queue_free()
-
+		
 # use a timer to prevent deleting an ennemy that pops out of screen
 func _on_Timer_timeout():
 	can_be_delete = true

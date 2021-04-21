@@ -7,6 +7,9 @@ export var hook_size = 500
 export var repell_speed = 2000
 export var lives = 3
 
+signal player_hit
+signal game_over
+
 var screen_size
 var casted = false
 var hook_dir = null
@@ -42,6 +45,9 @@ var hookeds = {
 func _ready():
 	screen_size = get_viewport_rect().size
 
+func _on_body_entered(body):
+	print("enter")
+	
 func _process_move(delta):
 	var velocity = Vector2()
 	if Input.is_action_pressed("ui_down"):
@@ -128,4 +134,17 @@ func _draw():
 		draw_line(Vector2(), hook_size * hookeds[hook_dir]["direction"], Color(0, 255, 0))
 		
 
+func _on_Area2D_body_entered(body):
+	var is_hooked = false
+	# check that the body entered is not one of the hooked objects
+	for value in hookeds.values():
+		if value["hooked"] and body == value["hooked"]:
+			is_hooked = true
+	if not is_hooked:
+		lives -= 1
+		body.queue_free()
+		if lives == 0:
+			emit_signal("game_over")
+			queue_free()
 
+		emit_signal("player_hit", [lives])
