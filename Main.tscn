@@ -27,7 +27,7 @@ curve = SubResource( 1 )
 [node name="MobSpawnLocation" type="PathFollow2D" parent="MobPath"]
 
 [node name="MobTimer" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.0
 autostart = true
 
 [node name="UserInterface" type="Control" parent="."]
@@ -79,4 +79,9 @@ align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="GameDuration" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
 [connection signal="timeout" from="MobTimer" to="." method="_on_MobTimer_timeout"]
+[connection signal="timeout" from="GameDuration" to="." method="_on_GameDuration_timeout"]

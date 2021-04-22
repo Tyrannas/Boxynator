@@ -8,6 +8,7 @@ var player
 # var a = 2
 # var b = "text"
 var screen_size
+var game_time = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -45,3 +46,8 @@ func _on_MobTimer_timeout():
 	mob.linear_velocity = direction * Vector2(mob_speed, mob_speed)
 	mob.connect("hit", $UserInterface/ScoreLabel, "_on_mob_hit")
 	player.connect("game_over", mob, "queue_free")
+
+
+func _on_GameDuration_timeout():
+	game_time += 1
+	$MobTimer.set_wait_time(3 - log(game_time))
