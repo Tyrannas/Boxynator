@@ -26,7 +26,9 @@ func _ready():
 #	pass
 
 func _on_game_over():
+	var score_text = $UserInterface/ScoreLabel.text
 	$UserInterface/ScoreLabel._on_game_over()
+	$UserInterface/GameOver.text += " \n " + score_text
 	$UserInterface/GameOver.show()
 	$MobTimer.stop()
 	
